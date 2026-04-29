@@ -4,103 +4,242 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sentinel Access</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; cursor: none; }
+        :root {
+            --primary: #00f2fe;
+            --secondary: #4facfe;
+            --bg-color: #050b14;
+            --surface: rgba(255, 255, 255, 0.03);
+            --surface-border: rgba(255, 255, 255, 0.08);
+            --text-muted: #8b9bb4;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; cursor: none; }
         
         body {
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(270deg, #0f2027, #203a43, #2c5364);
-            background-size: 600% 600%;
-            animation: bgMove 10s ease infinite;
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(79, 172, 254, 0.08), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(0, 242, 254, 0.08), transparent 25%);
             color: white;
             overflow: hidden;
+            position: relative;
         }
 
-        @keyframes bgMove { 0% {background-position: 0% 50%;} 50% {background-position: 100% 50%;} 100% {background-position: 0% 50%;} }
+        /* Ambient animated background orbs */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 1;
+            opacity: 0.6;
+            animation: float 10s infinite ease-in-out alternate;
+        }
+        .orb-1 { width: 300px; height: 300px; background: var(--secondary); top: -100px; left: -100px; }
+        .orb-2 { width: 400px; height: 400px; background: var(--primary); bottom: -150px; right: -100px; animation-delay: -5s; }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(30px, 50px) scale(1.1); }
+        }
 
         .container {
-            backdrop-filter: blur(25px);
-            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            background: var(--surface);
             padding: 40px;
-            border-radius: 25px;
-            width: 380px;
+            border-radius: 24px;
+            width: 400px;
             text-align: center;
-            box-shadow: 0 10px 50px rgba(0,0,0,0.5);
-            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+            border: 1px solid var(--surface-border);
             position: relative;
             z-index: 10;
+            transform: translateY(0);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 30px 60px -12px rgba(0,0,0,0.6), 0 0 40px rgba(0, 242, 254, 0.05);
         }
 
         .logo { 
-            font-size: 32px; 
-            margin-bottom: 10px; 
-            background: linear-gradient(45deg, #00d4ff, #00ffcc); 
+            font-size: 36px; 
+            margin-bottom: 5px; 
+            background: linear-gradient(135deg, #fff, var(--primary)); 
             -webkit-background-clip: text; 
             background-clip: text;
             -webkit-text-fill-color: transparent;
             font-weight: 700;
+            letter-spacing: -1px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
 
-        .tabs { display: flex; margin: 20px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .tab { flex: 1; padding: 10px; color: #aaa; transition: 0.3s; cursor: pointer; }
-        .tab.active { color: #00d4ff; border-bottom: 2px solid #00d4ff; font-weight: bold; }
+        .subtitle { font-size: 14px; color: var(--text-muted); margin-bottom: 30px; font-weight: 300; }
+
+        .tabs { 
+            display: flex; 
+            margin-bottom: 25px; 
+            background: rgba(0,0,0,0.2);
+            border-radius: 12px;
+            padding: 5px;
+            position: relative;
+        }
+        .tab { 
+            flex: 1; 
+            padding: 10px; 
+            color: var(--text-muted); 
+            transition: 0.3s; 
+            font-weight: 500;
+            font-size: 14px;
+            border-radius: 8px;
+            z-index: 2;
+        }
+        .tab:hover { color: #fff; }
+        .tab.active { 
+            color: #fff; 
+            background: rgba(255,255,255,0.05);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .input-group { position: relative; margin-bottom: 15px; }
 
         input {
             width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border-radius: 10px;
-            border: 1px solid rgba(255,255,255,0.1);
-            background: rgba(255,255,255,0.05);
+            padding: 15px 15px 15px 45px;
+            border-radius: 12px;
+            border: 1px solid var(--surface-border);
+            background: rgba(0, 0, 0, 0.2);
             color: white;
+            font-size: 15px;
             outline: none;
+            transition: all 0.3s ease;
         }
+        
+        .input-group i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            transition: 0.3s;
+            font-size: 14px;
+            pointer-events: none;
+        }
+
+        input:focus {
+            border-color: rgba(0, 242, 254, 0.5);
+            background: rgba(0, 0, 0, 0.4);
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.1);
+        }
+        
+        input:focus ~ i, input:not(:placeholder-shown) ~ i { color: var(--primary); }
 
         button {
             width: 100%;
-            padding: 12px;
-            border-radius: 10px;
+            padding: 15px;
+            border-radius: 12px;
             border: none;
-            margin-top: 15px;
-            font-weight: bold;
-            transition: 0.3s;
+            margin-top: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
 
-        .primary { background: linear-gradient(45deg, #00d4ff, #00ffcc); color: #000; }
-        .success { background: linear-gradient(45deg, #28a745, #6eff9e); color: #fff; }
+        .primary { 
+            background: linear-gradient(135deg, var(--secondary), var(--primary)); 
+            color: #fff; 
+            box-shadow: 0 10px 20px rgba(0, 242, 254, 0.2);
+        }
+        .primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px rgba(0, 242, 254, 0.3);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+        
+        .success { 
+            background: linear-gradient(135deg, #10b981, #059669); 
+            color: #fff; 
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2);
+        }
+        .success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px rgba(16, 185, 129, 0.3);
+        }
 
-        #status-msg { margin-top: 15px; font-size: 13px; color: #ff4d4d; }
+        #status-msg { margin-top: 15px; font-size: 13px; color: #ef4444; min-height: 20px; transition: 0.3s; font-weight: 500; }
 
         /* Cursor */
-        .cursor { width: 8px; height: 8px; background: #00d4ff; border-radius: 50%; position: fixed; pointer-events: none; z-index: 1001; }
-        .cursor-follower { width: 30px; height: 30px; border: 2px solid #00d4ff; border-radius: 50%; position: fixed; pointer-events: none; z-index: 1000; }
+        .cursor { width: 6px; height: 6px; background: var(--primary); border-radius: 50%; position: fixed; pointer-events: none; z-index: 1001; transition: transform 0.1s; transform: translate(-50%, -50%); }
+        .cursor-follower { width: 36px; height: 36px; border: 1.5px solid rgba(0, 242, 254, 0.5); border-radius: 50%; position: fixed; pointer-events: none; z-index: 1000; transition: transform 0.15s ease-out, width 0.3s, height 0.3s; transform: translate(-50%, -50%); }
+        
+        body:active .cursor-follower { transform: translate(-50%, -50%) scale(0.8); background: rgba(0, 242, 254, 0.1); }
+        
+        .form-section { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
 
     <div class="container">
-        <h2 class="logo">⚡ Sentinel</h2>
+        <h2 class="logo"><i class="fa-solid fa-bolt"></i> Sentinel</h2>
+        <p class="subtitle">Secure Node Access</p>
 
         <div class="tabs">
             <div id="tab-login" class="tab active" onclick="showForm('login')">Login</div>
             <div id="tab-register" class="tab" onclick="showForm('register')">Register</div>
         </div>
 
-        <div id="login-form">
-            <input type="text" id="login-username" placeholder="Username" autocomplete="username">
-            <input type="password" id="login-password" placeholder="Password" autocomplete="current-password">
-            <button class="primary" onclick="handleAuth('login')">Login &amp; Take Control</button>
+        <div id="login-form" class="form-section">
+            <div class="input-group">
+                <input type="text" id="login-username" placeholder="Username" autocomplete="username">
+                <i class="fa-solid fa-user"></i>
+            </div>
+            <div class="input-group">
+                <input type="password" id="login-password" placeholder="Password" autocomplete="current-password">
+                <i class="fa-solid fa-lock"></i>
+            </div>
+            <button class="primary" onclick="handleAuth('login')">
+                <span>Login &amp; Connect</span>
+                <i class="fa-solid fa-arrow-right-to-bracket"></i>
+            </button>
         </div>
 
-        <div id="register-form" style="display:none;">
-            <input type="text" id="reg-username" placeholder="Choose a Username">
-            <input type="text" id="reg-device" placeholder="Device Serial (e.g., SN-001)">
-            <input type="password" id="reg-password" placeholder="Create Password" autocomplete="new-password">
-            <button class="success" onclick="handleAuth('register')">Register &amp; Link Hardware</button>
+        <div id="register-form" class="form-section" style="display:none;">
+            <div class="input-group">
+                <input type="text" id="reg-username" placeholder="Choose a Username">
+                <i class="fa-solid fa-user-plus"></i>
+            </div>
+            <div class="input-group">
+                <input type="text" id="reg-device" placeholder="Device Serial (e.g., SN-001)">
+                <i class="fa-solid fa-microchip"></i>
+            </div>
+            <div class="input-group">
+                <input type="password" id="reg-password" placeholder="Create Password" autocomplete="new-password">
+                <i class="fa-solid fa-key"></i>
+            </div>
+            <button class="success" onclick="handleAuth('register')">
+                <span>Register Hardware</span>
+                <i class="fa-solid fa-link"></i>
+            </button>
         </div>
 
         <p id="status-msg"></p>

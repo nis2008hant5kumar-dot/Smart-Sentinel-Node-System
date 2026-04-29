@@ -91,16 +91,16 @@
         </div>
 
         <div id="login-form">
-            <input type="email" id="login-email" placeholder="Email">
-            <input type="password" id="login-password" placeholder="Password">
-            <button class="primary" onclick="handleAuth('login')">Login & Take Control</button>
+            <input type="text" id="login-username" placeholder="Username" autocomplete="username">
+            <input type="password" id="login-password" placeholder="Password" autocomplete="current-password">
+            <button class="primary" onclick="handleAuth('login')">Login &amp; Take Control</button>
         </div>
 
         <div id="register-form" style="display:none;">
+            <input type="text" id="reg-username" placeholder="Choose a Username">
             <input type="text" id="reg-device" placeholder="Device Serial (e.g., SN-001)">
-            <input type="email" id="reg-email" placeholder="Your Email">
-            <input type="password" id="reg-password" placeholder="Create Password">
-            <button class="success" onclick="handleAuth('register')">Register & Link Hardware</button>
+            <input type="password" id="reg-password" placeholder="Create Password" autocomplete="new-password">
+            <button class="success" onclick="handleAuth('register')">Register &amp; Link Hardware</button>
         </div>
 
         <p id="status-msg"></p>
@@ -135,61 +135,68 @@
             document.getElementById("tab-register").className = type === 'register' ? 'tab active' : 'tab';
         };
 
+        // Convert username → fake email for Firebase Auth
+        const toEmail = (username) => username.trim().toLowerCase() + "@sentinel.node";
+
         window.handleAuth = async (type) => {
             const msg = document.getElementById("status-msg");
             msg.style.color = "#ff4d4d";
             msg.innerText = "Processing...";
 
             if (type === 'login') {
-                const email = document.getElementById('login-email').value;
-                const pass = document.getElementById('login-password').value;
+                const username = document.getElementById('login-username').value.trim();
+                const pass    = document.getElementById('login-password').value;
+
+                if (!username) { msg.innerText = "Please enter your username."; return; }
 
                 try {
-                    const res = await signInWithEmailAndPassword(auth, email, pass);
-                    
-                    // Fetch user's linked device
+                    const res = await signInWithEmailAndPassword(auth, toEmail(username), pass);
+
+                    // Fetch linked device ID
                     const userSnap = await get(ref(db, `users/${res.user.uid}/deviceId`));
-                    let deviceId = "12345678901"; // Fallback to default if not found
-                    if (userSnap.exists()) {
-                        deviceId = userSnap.val();
-                    }
+                    const deviceId = userSnap.exists() ? userSnap.val() : "12345678901";
 
-                    // CHECK IF DEVICE IS ALREADY IN USE
-                    const sessionSnap = await get(ref(db, `nodes/${deviceId}/active_session`));
-                    const currentSession = sessionSnap.val();
+                    // Force-set active_session → kicks out any previous session on this device
+                    await set(ref(db, `nodes/${deviceId}/active_session`), username);
 
-                    if (currentSession && currentSession !== res.user.email && currentSession !== "") {
-                        msg.innerText = "Access Denied: Device is currently in use by " + currentSession;
-                        await signOut(auth);
-                        return;
-                    }
-
-                    // Start session
-                    await set(ref(db, `nodes/${deviceId}/active_session`), res.user.email);
                     sessionStorage.setItem("deviceId", deviceId);
+                    sessionStorage.setItem("username", username);
                     window.location.href = "dashboard.html";
 
-                } catch (e) { msg.innerText = e.message; }
-
-            } else {
-                const email = document.getElementById('reg-email').value;
-                const pass = document.getElementById('reg-password').value;
-                const sn = document.getElementById('reg-device').value;
-
-                if (!sn || sn.trim() === "") {
-                    msg.innerText = "Please enter a valid Device Serial Key.";
-                    return;
+                } catch (e) {
+                    if (e.code === "auth/invalid-credential" || e.code === "auth/wrong-password" || e.code === "auth/user-not-found") {
+                        msg.innerText = "Invalid username or password.";
+                    } else {
+                        msg.innerText = e.message;
+                    }
                 }
 
+            } else {
+                const username = document.getElementById('reg-username').value.trim();
+                const sn       = document.getElementById('reg-device').value.trim();
+                const pass     = document.getElementById('reg-password').value;
+
+                if (!username) { msg.innerText = "Please choose a username."; return; }
+                if (!sn)       { msg.innerText = "Please enter a valid Device Serial Key."; return; }
+                if (pass.length < 6) { msg.innerText = "Password must be at least 6 characters."; return; }
+
                 try {
-                    const res = await createUserWithEmailAndPassword(auth, email, pass);
-                    
-                    // Link user's account to this Serial Key
-                    await set(ref(db, `users/${res.user.uid}/deviceId`), sn.trim());
-                    
+                    const res = await createUserWithEmailAndPassword(auth, toEmail(username), pass);
+
+                    // Save username & linked device
+                    await set(ref(db, `users/${res.user.uid}/username`), username);
+                    await set(ref(db, `users/${res.user.uid}/deviceId`), sn);
+
                     msg.style.color = "#6eff9e";
-                    msg.innerText = "Account Created! Please Login.";
-                } catch (e) { msg.innerText = e.message; }
+                    msg.innerText = "Account created! Please login.";
+                    showForm('login');
+                } catch (e) {
+                    if (e.code === "auth/email-already-in-use") {
+                        msg.innerText = "Username already taken. Choose another.";
+                    } else {
+                        msg.innerText = e.message;
+                    }
+                }
             }
         };
 

@@ -191,7 +191,7 @@
         <section id="account" class="page">
             <div class="glass-card">
                 <i class="fa-solid fa-circle-user" style="font-size: 60px; color: #38bdf8;"></i>
-                <h3 id="user-email-display" style="margin-top: 15px;">Detecting User...</h3>
+                <h3 id="user-display" style="margin-top: 15px;">Loading...</h3>
                 <p style="font-size: 12px; color: #94a3b8; margin-bottom: 20px;">Authorized Owner</p>
                 <button onclick="logout()" style="background: #ef4444; color: white; border: none; padding: 10px 20px; border-radius: 10px; width: 100%;">Sign Out of Device</button>
             </div>
@@ -219,7 +219,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getDatabase, ref, onValue, set, onDisconnect } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getDatabase, ref, get, onValue, set, onDisconnect } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBmB6Jj0XbpTFm0u44X1iRvGU64U62VCOU",
@@ -246,25 +246,35 @@
             el.classList.add('active');
         };
 
+        // Read username from sessionStorage (set during login)
+        let currentUsername = sessionStorage.getItem("username") || null;
+
         // --- AUTH & AUTO-KICK LISTENER ---
         let sessionDisconnectRef = null;
 
-        onAuthStateChanged(auth, user => {
-            if(user) {
-                document.getElementById("user-email-display").innerText = user.email;
+        onAuthStateChanged(auth, async user => {
+            if (user) {
+                // If sessionStorage doesn't have username, fetch from DB
+                if (!currentUsername) {
+                    const snap = await get(ref(db, `users/${user.uid}/username`));
+                    currentUsername = snap.exists() ? snap.val() : user.email.split('@')[0];
+                    sessionStorage.setItem("username", currentUsername);
+                }
+
+                document.getElementById("user-display").innerText = currentUsername;
 
                 const sessionRef = ref(db, `nodes/${deviceId}/active_session`);
-                
+
                 // Automatically release device lock when tab is closed
                 sessionDisconnectRef = onDisconnect(sessionRef);
                 sessionDisconnectRef.set("");
 
-                // Listen for session termination
+                // Listen for session takeover
                 onValue(sessionRef, (snapshot) => {
-                    const activeEmail = snapshot.val();
-                    if (activeEmail && activeEmail !== user.email && activeEmail !== "") {
-                        alert("Session Terminated: Device lock was overridden.");
-                        window.location.href = "index.html";
+                    const activeUser = snapshot.val();
+                    if (activeUser && activeUser !== currentUsername && activeUser !== "") {
+                        alert(`Session terminated: "${activeUser}" has taken control of this device.`);
+                        signOut(auth).then(() => window.location.href = "index.html");
                     }
                 });
 
@@ -350,12 +360,13 @@
         window.logout = async () => {
             const user = auth.currentUser;
             if (user) {
-                // Clear session to unlock device for next person
                 if (sessionDisconnectRef) {
-                    await sessionDisconnectRef.cancel(); // Prevent race conditions
+                    await sessionDisconnectRef.cancel();
                 }
-                await set(ref(db, `nodes/${deviceId}/active_session`), ""); 
+                await set(ref(db, `nodes/${deviceId}/active_session`), "");
             }
+            sessionStorage.removeItem("username");
+            sessionStorage.removeItem("deviceId");
             signOut(auth).then(() => window.location.href = "index.html");
         };
     </script>

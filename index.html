@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentinel Access</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; cursor: none; }
+        
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(270deg, #0f2027, #203a43, #2c5364);
+            background-size: 600% 600%;
+            animation: bgMove 10s ease infinite;
+            color: white;
+            overflow: hidden;
+        }
+
+        @keyframes bgMove { 0% {background-position: 0% 50%;} 50% {background-position: 100% 50%;} 100% {background-position: 0% 50%;} }
+
+        .container {
+            backdrop-filter: blur(25px);
+            background: rgba(255,255,255,0.08);
+            padding: 40px;
+            border-radius: 25px;
+            width: 380px;
+            text-align: center;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+            z-index: 10;
+        }
+
+        .logo { 
+            font-size: 32px; 
+            margin-bottom: 10px; 
+            background: linear-gradient(45deg, #00d4ff, #00ffcc); 
+            -webkit-background-clip: text; 
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+
+        .tabs { display: flex; margin: 20px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .tab { flex: 1; padding: 10px; color: #aaa; transition: 0.3s; cursor: pointer; }
+        .tab.active { color: #00d4ff; border-bottom: 2px solid #00d4ff; font-weight: bold; }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.05);
+            color: white;
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            margin-top: 15px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .primary { background: linear-gradient(45deg, #00d4ff, #00ffcc); color: #000; }
+        .success { background: linear-gradient(45deg, #28a745, #6eff9e); color: #fff; }
+
+        #status-msg { margin-top: 15px; font-size: 13px; color: #ff4d4d; }
+
+        /* Cursor */
+        .cursor { width: 8px; height: 8px; background: #00d4ff; border-radius: 50%; position: fixed; pointer-events: none; z-index: 1001; }
+        .cursor-follower { width: 30px; height: 30px; border: 2px solid #00d4ff; border-radius: 50%; position: fixed; pointer-events: none; z-index: 1000; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2 class="logo">⚡ Sentinel</h2>
+
+        <div class="tabs">
+            <div id="tab-login" class="tab active" onclick="showForm('login')">Login</div>
+            <div id="tab-register" class="tab" onclick="showForm('register')">Register</div>
+        </div>
+
+        <div id="login-form">
+            <input type="email" id="login-email" placeholder="Email">
+            <input type="password" id="login-password" placeholder="Password">
+            <button class="primary" onclick="handleAuth('login')">Login & Take Control</button>
+        </div>
+
+        <div id="register-form" style="display:none;">
+            <input type="text" id="reg-device" placeholder="Device Serial (e.g., SN-001)">
+            <input type="email" id="reg-email" placeholder="Your Email">
+            <input type="password" id="reg-password" placeholder="Create Password">
+            <button class="success" onclick="handleAuth('register')">Register & Link Hardware</button>
+        </div>
+
+        <p id="status-msg"></p>
+    </div>
+
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getDatabase, ref, get, set, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBmB6Jj0XbpTFm0u44X1iRvGU64U62VCOU",
+            authDomain: "ai-smart-sentinel-node-system.firebaseapp.com",
+            projectId: "ai-smart-sentinel-node-system",
+            storageBucket: "ai-smart-sentinel-node-system.appspot.com",
+            messagingSenderId: "152209661326",
+            appId: "1:152209661326:web:09566bb5db4ad799d318df",
+            databaseURL: "https://ai-smart-sentinel-node-system-default-rtdb.firebaseio.com"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        window.showForm = (type) => {
+            document.getElementById("login-form").style.display = type === 'login' ? 'block' : 'none';
+            document.getElementById("register-form").style.display = type === 'register' ? 'block' : 'none';
+            document.getElementById("tab-login").className = type === 'login' ? 'tab active' : 'tab';
+            document.getElementById("tab-register").className = type === 'register' ? 'tab active' : 'tab';
+        };
+
+        window.handleAuth = async (type) => {
+            const msg = document.getElementById("status-msg");
+            msg.style.color = "#ff4d4d";
+            msg.innerText = "Processing...";
+
+            if (type === 'login') {
+                const email = document.getElementById('login-email').value;
+                const pass = document.getElementById('login-password').value;
+
+                try {
+                    const res = await signInWithEmailAndPassword(auth, email, pass);
+                    
+                    // Fetch user's linked device
+                    const userSnap = await get(ref(db, `users/${res.user.uid}/deviceId`));
+                    let deviceId = "12345678901"; // Fallback to default if not found
+                    if (userSnap.exists()) {
+                        deviceId = userSnap.val();
+                    }
+
+                    // CHECK IF DEVICE IS ALREADY IN USE
+                    const sessionSnap = await get(ref(db, `nodes/${deviceId}/active_session`));
+                    const currentSession = sessionSnap.val();
+
+                    if (currentSession && currentSession !== res.user.email && currentSession !== "") {
+                        msg.innerText = "Access Denied: Device is currently in use by " + currentSession;
+                        await signOut(auth);
+                        return;
+                    }
+
+                    // Start session
+                    await set(ref(db, `nodes/${deviceId}/active_session`), res.user.email);
+                    sessionStorage.setItem("deviceId", deviceId);
+                    window.location.href = "dashboard.html";
+
+                } catch (e) { msg.innerText = e.message; }
+
+            } else {
+                const email = document.getElementById('reg-email').value;
+                const pass = document.getElementById('reg-password').value;
+                const sn = document.getElementById('reg-device').value;
+
+                if (!sn || sn.trim() === "") {
+                    msg.innerText = "Please enter a valid Device Serial Key.";
+                    return;
+                }
+
+                try {
+                    const res = await createUserWithEmailAndPassword(auth, email, pass);
+                    
+                    // Link user's account to this Serial Key
+                    await set(ref(db, `users/${res.user.uid}/deviceId`), sn.trim());
+                    
+                    msg.style.color = "#6eff9e";
+                    msg.innerText = "Account Created! Please Login.";
+                } catch (e) { msg.innerText = e.message; }
+            }
+        };
+
+        // Cursor Animation
+        const cursor = document.querySelector(".cursor");
+        const follower = document.querySelector(".cursor-follower");
+        let mX = 0, mY = 0, pX = 0, pY = 0;
+        document.addEventListener("mousemove", (e) => { 
+            mX = e.clientX; mY = e.clientY; 
+            cursor.style.left = `${mX}px`; cursor.style.top = `${mY}px`; 
+        });
+        function animate() { 
+            pX += (mX - pX) * 0.15; pY += (mY - pY) * 0.15; 
+            follower.style.left = `${pX}px`; follower.style.top = `${pY}px`; 
+            requestAnimationFrame(animate); 
+        }
+        animate();
+    </script>
+</body>
+</html>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,11 +19,17 @@
             --success: #10b981;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; -webkit-tap-highlight-color: transparent; }
-        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
         body {
             background-color: var(--bg-color);
-            background-image: 
+            background-image:
                 radial-gradient(circle at 15% 50%, rgba(79, 172, 254, 0.05), transparent 25%),
                 radial-gradient(circle at 85% 30%, rgba(0, 242, 254, 0.05), transparent 25%);
             color: white;
@@ -43,12 +50,32 @@
             animation: float 15s infinite ease-in-out alternate;
             pointer-events: none;
         }
-        .orb-1 { width: 300px; height: 300px; background: var(--secondary); top: -50px; left: -100px; }
-        .orb-2 { width: 400px; height: 400px; background: var(--primary); bottom: 100px; right: -150px; animation-delay: -7s; }
+
+        .orb-1 {
+            width: 300px;
+            height: 300px;
+            background: var(--secondary);
+            top: -50px;
+            left: -100px;
+        }
+
+        .orb-2 {
+            width: 400px;
+            height: 400px;
+            background: var(--primary);
+            bottom: 100px;
+            right: -150px;
+            animation-delay: -7s;
+        }
 
         @keyframes float {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(50px, 80px) scale(1.2); }
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            100% {
+                transform: translate(50px, 80px) scale(1.2);
+            }
         }
 
         /* --- Header --- */
@@ -70,8 +97,8 @@
             gap: 10px;
             font-size: 20px;
             font-weight: 700;
-            background: linear-gradient(135deg, #fff, var(--primary)); 
-            -webkit-background-clip: text; 
+            background: linear-gradient(135deg, #fff, var(--primary));
+            -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -83,13 +110,36 @@
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             transition: all 0.3s;
         }
-        .status-safe { background: rgba(16, 185, 129, 0.15); border: 1px solid var(--success); color: var(--success); }
-        .status-danger { background: rgba(239, 68, 68, 0.15); border: 1px solid var(--danger); color: var(--danger); animation: pulseDanger 1.5s infinite; }
 
-        @keyframes pulseDanger { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+        .status-safe {
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid var(--success);
+            color: var(--success);
+        }
+
+        .status-danger {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid var(--danger);
+            color: var(--danger);
+            animation: pulseDanger 1.5s infinite;
+        }
+
+        @keyframes pulseDanger {
+            0% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+            }
+
+            70% {
+                box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+            }
+        }
 
         /* --- ESP Status Badge --- */
         .esp-status-badge {
@@ -103,13 +153,38 @@
             letter-spacing: 0.5px;
             text-transform: uppercase;
             transition: all 0.4s ease;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
-        .esp-live { background: rgba(16, 185, 129, 0.1); border: 1px solid var(--success); color: var(--success); }
-        .esp-offline { background: rgba(239, 68, 68, 0.1); border: 1px solid var(--danger); color: var(--danger); animation: pulseDanger 1.5s infinite; }
-        .esp-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
-        .esp-live .esp-dot  { background: var(--success); box-shadow: 0 0 8px var(--success); }
-        .esp-offline .esp-dot { background: var(--danger); box-shadow: 0 0 8px var(--danger); }
+
+        .esp-live {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid var(--success);
+            color: var(--success);
+        }
+
+        .esp-offline {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--danger);
+            color: var(--danger);
+            animation: pulseDanger 1.5s infinite;
+        }
+
+        .esp-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .esp-live .esp-dot {
+            background: var(--success);
+            box-shadow: 0 0 8px var(--success);
+        }
+
+        .esp-offline .esp-dot {
+            background: var(--danger);
+            box-shadow: 0 0 8px var(--danger);
+        }
 
         /* --- Main Content Area --- */
         .app-content {
@@ -120,10 +195,26 @@
             z-index: 10;
         }
 
-        .page { display: none; animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
-        .page.active { display: block; }
+        .page {
+            display: none;
+            animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
 
-        @keyframes slideUpFade { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .page.active {
+            display: block;
+        }
+
+        @keyframes slideUpFade {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
         /* --- Cards --- */
         .glass-card {
@@ -134,30 +225,42 @@
             padding: 25px;
             margin-bottom: 20px;
             text-align: center;
-            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        
+
         .glass-card:hover {
             transform: translateY(-3px);
-            box-shadow: 0 15px 35px -10px rgba(0,0,0,0.6), 0 0 20px rgba(0, 242, 254, 0.05);
+            box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 242, 254, 0.05);
         }
 
-        .card-label { font-size: 14px; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+        .card-label {
+            font-size: 14px;
+            color: var(--text-muted);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
 
-        .val-text { 
-            font-size: 56px; 
-            font-weight: 700; 
+        .val-text {
+            font-size: 56px;
+            font-weight: 700;
             background: linear-gradient(135deg, #fff, var(--primary));
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin: 5px 0; 
+            margin: 5px 0;
             line-height: 1;
             filter: drop-shadow(0 0 15px rgba(0, 242, 254, 0.2));
         }
-        .unit { font-size: 24px; font-weight: 500; -webkit-text-fill-color: var(--primary); }
-        
+
+        .unit {
+            font-size: 24px;
+            font-weight: 500;
+            -webkit-text-fill-color: var(--primary);
+        }
+
         /* --- Control Switch --- */
         .switch-container {
             display: flex;
@@ -182,17 +285,24 @@
             justify-content: center;
             align-items: center;
         }
-        
+
         .power-btn.on {
             background: linear-gradient(135deg, var(--secondary), var(--primary));
             border-color: transparent;
             box-shadow: 0 0 30px rgba(0, 242, 254, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.2);
             color: #050b14;
         }
-        
-        .power-btn:active { transform: scale(0.9); }
 
-        #pwr-status-text { font-size: 18px; font-weight: 600; letter-spacing: 1px; color: var(--text-muted); }
+        .power-btn:active {
+            transform: scale(0.9);
+        }
+
+        #pwr-status-text {
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+        }
 
         /* --- Navigation Bar --- */
         .nav-wrapper {
@@ -214,7 +324,7 @@
             padding: 15px 10px;
             border-radius: 24px;
             border: 1px solid var(--surface-border);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
         }
 
         .nav-item {
@@ -233,23 +343,38 @@
             border-radius: 12px;
         }
 
-        .nav-item i { font-size: 22px; transition: 0.3s; }
-        
-        .nav-item:hover { color: #fff; }
-        
-        .nav-item.active { 
-            color: var(--primary); 
+        .nav-item i {
+            font-size: 22px;
+            transition: 0.3s;
+        }
+
+        .nav-item:hover {
+            color: #fff;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
             background: rgba(0, 242, 254, 0.1);
         }
-        
+
         .nav-item.active i {
             transform: translateY(-2px);
             filter: drop-shadow(0 0 5px rgba(0, 242, 254, 0.5));
         }
 
-        .about-text { text-align: left; line-height: 1.6; font-size: 14px; color: #cbd5e1; }
-        .team-list { margin-top: 15px; color: var(--primary); font-weight: 600; }
-        
+        .about-text {
+            text-align: left;
+            line-height: 1.6;
+            font-size: 14px;
+            color: #cbd5e1;
+        }
+
+        .team-list {
+            margin-top: 15px;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
         /* Account Page */
         .user-icon {
             font-size: 70px;
@@ -259,7 +384,7 @@
             -webkit-text-fill-color: transparent;
             filter: drop-shadow(0 10px 20px rgba(0, 242, 254, 0.2));
         }
-        
+
         .btn-danger {
             background: rgba(239, 68, 68, 0.1);
             color: var(--danger);
@@ -276,20 +401,80 @@
             gap: 10px;
             cursor: pointer;
         }
+
         .btn-danger:hover {
             background: var(--danger);
             color: white;
             box-shadow: 0 10px 20px rgba(239, 68, 68, 0.3);
         }
+        /* --- Responsive Design --- */
+        @media (max-width: 480px) {
+            .app-header {
+                padding: 15px 20px;
+            }
+            .header-title {
+                font-size: 18px;
+            }
+            .val-text {
+                font-size: 46px;
+            }
+            .power-btn {
+                width: 120px;
+                height: 120px;
+                font-size: 32px;
+            }
+            .nav-item i {
+                font-size: 18px;
+            }
+            .app-content {
+                padding: 20px;
+                padding-bottom: 100px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .app-header {
+                padding: 20px 40px;
+            }
+            .app-content {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                padding-top: 40px;
+            }
+            .page.active {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 25px;
+                width: 100%;
+                max-width: 900px;
+                justify-content: center;
+            }
+            .glass-card {
+                flex: 1 1 300px;
+                margin-bottom: 0;
+            }
+            /* Constrain single cards on wider screens */
+            #controls .glass-card, 
+            #account .glass-card, 
+            #about .glass-card {
+                flex: 1 1 100%;
+                max-width: 600px;
+            }
+            .nav-wrapper {
+                max-width: 600px;
+            }
+        }
     </style>
 </head>
+
 <body>
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
 
     <header class="app-header">
         <div>
-            <div class="header-title"><i class="fa-solid fa-bolt"></i> Sentinel</div>
+            <div class="header-title"><i class="fa-solid fa-bolt"></i> Sentinel Node System </div>
             <span id="device-id-tag" style="font-size: 12px; color: var(--text-muted); font-weight: 500;">SN-001</span>
         </div>
         <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
@@ -338,11 +523,14 @@
 
         <section id="about" class="page">
             <div class="glass-card about-text">
-                <h3 style="color: white; margin-bottom: 15px; font-size: 20px;"><i class="fa-solid fa-shield-halved"></i> Project Sentinel</h3>
-                <p>An AI-powered IoT energy monitor designed to prevent overloads and electrical fires through intelligent 3-strike countdown protection.</p>
+                <h3 style="color: white; margin-bottom: 15px; font-size: 20px;"><i
+                        class="fa-solid fa-shield-halved"></i> Project Sentinel</h3>
+                <p>An AI-powered IoT energy monitor designed to prevent overloads and electrical fires through
+                    intelligent 3-strike countdown protection.</p>
                 <p class="team-list">Team: Nishant Poddar, Umar, Akanksha, Sikandar</p>
                 <hr style="margin: 20px 0; border: 0.5px solid var(--surface-border);">
-                <p style="margin-bottom: 10px;"><i class="fa-solid fa-location-dot" style="color: var(--primary); width: 20px;"></i> Lovely Professional University</p>
+                <p style="margin-bottom: 10px;"><i class="fa-solid fa-location-dot"
+                        style="color: var(--primary); width: 20px;"></i> Lovely Professional University</p>
                 <p><i class="fa-solid fa-phone" style="color: var(--primary); width: 20px;"></i> +91 9006905094</p>
             </div>
         </section>
@@ -351,7 +539,8 @@
     <div class="nav-wrapper">
         <nav class="nav-bar">
             <div class="nav-item active" onclick="switchPage('home', this)"><i class="fa-solid fa-house"></i>Home</div>
-            <div class="nav-item" onclick="switchPage('controls', this)"><i class="fa-solid fa-sliders"></i>Control</div>
+            <div class="nav-item" onclick="switchPage('controls', this)"><i class="fa-solid fa-sliders"></i>Control
+            </div>
             <div class="nav-item" onclick="switchPage('account', this)"><i class="fa-solid fa-user"></i>Account</div>
             <div class="nav-item" onclick="switchPage('about', this)"><i class="fa-solid fa-info-circle"></i>About</div>
         </nav>
@@ -375,9 +564,9 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getDatabase(app);
-        
+
         // Read device ID linked during login
-        const deviceId = sessionStorage.getItem("deviceId") || "12345678901"; 
+        const deviceId = sessionStorage.getItem("deviceId") || "12345678901";
 
         // --- NAVIGATION LOGIC ---
         window.switchPage = (pageId, el) => {
@@ -427,15 +616,15 @@
         // --- REALTIME SENSOR DATA ---
         onValue(ref(db, `nodes/${deviceId}`), snap => {
             const data = snap.val();
-            if(data) {
+            if (data) {
                 document.getElementById("flow").innerText = parseFloat(data.current_flow || 0).toFixed(2);
                 document.getElementById("volt").innerText = data.voltage_level || 0;
-                
+
                 const btn = document.getElementById("pwr-btn");
                 const statusText = document.getElementById("pwr-status-text");
                 const safety = document.getElementById("safety-status");
 
-                if(data.relay_status === "ON") {
+                if (data.relay_status === "ON") {
                     btn.classList.add('on');
                     statusText.innerText = "System is ON";
                 } else {
@@ -444,7 +633,7 @@
                 }
 
                 // Safety Indicator (Red if Flow > 2.0A)
-                if(parseFloat(data.current_flow) > 2.0) {
+                if (parseFloat(data.current_flow) > 2.0) {
                     safety.innerText = "OVERLOAD!";
                     safety.className = "status-badge status-danger";
                 } else {
@@ -465,18 +654,18 @@
         const ESP_TIMEOUT_MS = 12000; // 12 seconds (2.4x the 5s heartbeat interval)
 
         function updateEspStatus(lastSeen) {
-            const badge  = document.getElementById("esp-status-badge");
-            const label  = document.getElementById("esp-status-text");
+            const badge = document.getElementById("esp-status-badge");
+            const label = document.getElementById("esp-status-text");
 
             // Detect if the ESP heartbeat counter has ticked forward
             if (lastSeen !== lastSeenValue) {
-                lastSeenValue      = lastSeen;
-                lastSeenChangedAt  = Date.now();
+                lastSeenValue = lastSeen;
+                lastSeenChangedAt = Date.now();
             }
 
             const msSinceChange = Date.now() - lastSeenChangedAt;
             const isLive = (lastSeen !== null && lastSeen !== undefined) &&
-                           (msSinceChange < ESP_TIMEOUT_MS);
+                (msSinceChange < ESP_TIMEOUT_MS);
 
             if (isLive) {
                 badge.className = "esp-status-badge esp-live";
@@ -512,4 +701,5 @@
         };
     </script>
 </body>
+
 </html>

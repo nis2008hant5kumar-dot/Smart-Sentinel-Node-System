@@ -1,0 +1,45 @@
+.page { padding:20px; display:flex; flex-direction:column; gap:16px; }
+.topRow { display:flex; align-items:center; justify-content:space-between; }
+.heading { font-size:20px; font-weight:700; }
+.count { font-size:12px; background:var(--surface); border:1px solid var(--border); color:var(--muted); padding:4px 12px; border-radius:20px; }
+
+.grid { display:flex; flex-direction:column; gap:12px; }
+
+.card {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:16px;
+  display:flex;
+  align-items:flex-start;
+  gap:14px;
+  transition:all 0.25s;
+  position:relative;
+  overflow:hidden;
+}
+.card::before {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(90deg, var(--c, transparent) 0%, transparent 100%);
+  opacity:0; transition:opacity 0.3s;
+}
+.card:hover { border-color:var(--c, var(--border)); }
+.card:hover::before { opacity:0.04; }
+
+.iconBox { width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+
+.info { flex:1; min-width:0; }
+.name { font-size:15px; font-weight:600; color:var(--text); }
+.role { font-size:12px; color:var(--muted); margin-top:2px; }
+.specs { list-style:none; margin-top:8px; display:flex; flex-wrap:wrap; gap:5px; }
+.specs li {
+  font-size:11px; font-family:'JetBrains Mono',monospace;
+  background:rgba(255,255,255,0.04); border:1px solid var(--border);
+  padding:2px 8px; border-radius:6px; color:var(--muted);
+}
+
+.pinBadge {
+  flex-shrink:0; align-self:flex-start;
+  font-size:11px; font-weight:600; font-family:'JetBrains Mono',monospace;
+  padding:4px 10px; border-radius:8px; border:1px solid;
+  white-space:nowrap;
+}

@@ -1,0 +1,69 @@
+.page { padding:24px 20px; display:flex; flex-direction:column; align-items:center; gap:24px; }
+.heading { font-size:20px; font-weight:700; color:var(--text); align-self:flex-start; }
+
+/* Power button */
+.btnWrap { position:relative; display:flex; align-items:center; justify-content:center; margin:16px 0; }
+.ring {
+  position:absolute; width:180px; height:180px; border-radius:50%;
+  border:2px solid var(--border); transition:all 0.5s;
+  animation:none;
+}
+.ringOn { border-color:rgba(0,242,254,0.4); box-shadow:0 0 40px rgba(0,242,254,0.2); animation:pulse-ring 2.5s ease-in-out infinite; }
+
+.powerBtn {
+  width:150px; height:150px; border-radius:50%;
+  border:2px solid var(--border);
+  display:flex; align-items:center; justify-content:center;
+  background:rgba(255,255,255,0.04);
+  color:var(--muted);
+  transition:all 0.4s;
+  position:relative; z-index:1;
+}
+.btnOn {
+  background:linear-gradient(135deg, var(--secondary), var(--primary));
+  border-color:transparent;
+  color:#030912;
+  box-shadow:0 0 50px rgba(0,242,254,0.45);
+}
+.btnOff:hover { background:rgba(255,255,255,0.07); color:var(--text); }
+.btnLoading { opacity:0.6; pointer-events:none; }
+
+.statusLabel { font-size:15px; color:var(--muted); font-weight:500; }
+
+/* Toggle strip */
+.toggleStrip {
+  width:100%; max-width:400px;
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:16px; padding:16px 20px;
+  display:flex; align-items:center; justify-content:space-between;
+  cursor:pointer; transition:background 0.2s;
+  user-select:none;
+}
+.toggleStrip:hover { background:var(--surface-hover); }
+.stripLabel { display:flex; align-items:center; gap:8px; font-size:15px; font-weight:500; color:var(--text); }
+
+.pill { width:52px; height:28px; border-radius:14px; position:relative; transition:background 0.35s; }
+.pillOff { background:rgba(255,255,255,0.1); }
+.pillOn  { background:linear-gradient(90deg, var(--secondary), var(--primary)); }
+.pillThumb {
+  position:absolute; top:3px; width:22px; height:22px; border-radius:50%;
+  background:#fff; box-shadow:0 1px 6px rgba(0,0,0,0.4);
+  transition:left 0.35s cubic-bezier(0.34,1.56,0.64,1);
+}
+.pillOff .pillThumb { left:3px; }
+.pillOn  .pillThumb { left:27px; }
+
+/* Info */
+.infoCard {
+  width:100%; max-width:400px;
+  background:rgba(245,158,11,0.06); border:1px solid rgba(245,158,11,0.25);
+  border-radius:14px; padding:16px;
+  display:flex; align-items:flex-start; gap:10px;
+  font-size:13px; color:var(--muted); line-height:1.6;
+}
+.infoCard strong { color:var(--warning); }
+
+@keyframes pulse-ring {
+  0%,100% { box-shadow:0 0 40px rgba(0,242,254,0.2); transform:scale(1); }
+  50%      { box-shadow:0 0 60px rgba(0,242,254,0.4); transform:scale(1.04); }
+}

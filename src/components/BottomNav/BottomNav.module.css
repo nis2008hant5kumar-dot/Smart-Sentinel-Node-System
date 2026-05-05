@@ -29,3 +29,15 @@
   color: var(--primary);
   background: rgba(0,242,254,0.08);
 }
+
+.avatar {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--border);
+  transition: border-color 0.25s;
+}
+.avatarActive {
+  border-color: var(--primary);
+  box-shadow: 0 0 8px rgba(0,242,254,0.4);
+}

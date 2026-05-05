@@ -17,10 +17,12 @@ function MetricCard({ label, value, unit, icon: Icon, color, glow }) {
 }
 
 export default function Dashboard({ data, online }) {
-  const current = parseFloat(data?.current_flow ?? 0).toFixed(2);
-  const voltage = Math.round(data?.voltage_level ?? 0);
-  const relay   = data?.relay_status ?? 'OFF';
-  const overload = parseFloat(current) > 2.0;
+  const current    = parseFloat(data?.current_flow ?? 0).toFixed(2);
+  const voltage    = Math.round(data?.voltage_level ?? 0);
+  const relay      = data?.relay_status ?? 'OFF';
+  const overload   = parseFloat(current) > 2.0;
+  const deviceLabel = data?.device_id ?? null;
+  const deviceType  = data?.device_type && data.device_type !== 'None' ? data.device_type : null;
 
   return (
     <div className={`${styles.page} animate-in`}>
@@ -35,6 +37,13 @@ export default function Dashboard({ data, online }) {
             <h1 className={styles.heroTitle}>
               {online ? 'Node Online' : 'Node Offline'}
             </h1>
+            {(deviceLabel || deviceType) && (
+              <p className={styles.heroDevice}>
+                {deviceLabel && <span>{deviceLabel}</span>}
+                {deviceLabel && deviceType && <span className={styles.heroDot}>·</span>}
+                {deviceType && <span>{deviceType}</span>}
+              </p>
+            )}
             <p className={styles.heroSub}>
               Power: <strong style={{ color: relay === 'ON' ? 'var(--primary)' : 'var(--muted)' }}>
                 {relay}

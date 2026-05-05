@@ -1,8 +1,14 @@
 import styles from './Header.module.css';
 import { Zap } from 'lucide-react';
-import { DEVICE_ID } from '../../firebase';
 
-export default function Header({ online, overload }) {
+export default function Header({ online, overload, nodeData }) {
+  // Use the human-readable device_id from DB (e.g. "SN-001"),
+  // falling back to the raw key if not yet loaded
+  const deviceLabel = nodeData?.device_id ?? '—';
+  const deviceType  = nodeData?.device_type && nodeData.device_type !== 'None'
+    ? nodeData.device_type
+    : null;
+
   return (
     <header className={styles.header}>
       <div className={styles.brand}>
@@ -11,7 +17,10 @@ export default function Header({ online, overload }) {
         </div>
         <div>
           <div className={styles.title}>Sentinel Node</div>
-          <div className={styles.deviceId}>SN-{DEVICE_ID}</div>
+          <div className={styles.deviceId}>
+            {deviceLabel}
+            {deviceType && <span className={styles.deviceType}> · {deviceType}</span>}
+          </div>
         </div>
       </div>
 

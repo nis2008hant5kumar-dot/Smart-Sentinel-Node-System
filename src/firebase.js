@@ -11,6 +11,6 @@ const firebaseConfig = {
   databaseURL: "https://ai-smart-sentinel-node-system-default-rtdb.firebaseio.com",
 };
 
-const app = initializeApp(firebaseConfig);
+export const app = initializeApp(firebaseConfig);
 export const db = getDatabase(app);
 export const DEVICE_ID = "12345678901";

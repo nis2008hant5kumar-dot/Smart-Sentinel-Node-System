@@ -19,13 +19,13 @@ export function useNodeData() {
           lastSeen = val.last_seen;
           lastSeenAt = Date.now();
         }
-        setOnline(Date.now() - lastSeenAt < 12000);
+        setOnline(Date.now() - lastSeenAt < 8000);
       }
     });
 
     const interval = setInterval(() => {
-      setOnline(lastSeen != null && Date.now() - lastSeenAt < 12000);
-    }, 3000);
+      setOnline(lastSeen != null && Date.now() - lastSeenAt < 8000);
+    }, 1000);
 
     return () => { unsub(); clearInterval(interval); };
   }, []);

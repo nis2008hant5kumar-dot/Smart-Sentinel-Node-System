@@ -56,6 +56,38 @@
   animation: spin-slow 0.9s linear infinite;
 }
 
+/* No device linked empty state */
+.noDevice {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 60vh;
+  padding: 32px 24px;
+  text-align: center;
+}
+.noDeviceIcon { font-size: 48px; line-height: 1; }
+.noDeviceTitle {
+  font-size: 18px; font-weight: 700; color: var(--text);
+}
+.noDeviceSub { font-size: 14px; color: var(--muted); max-width: 260px; line-height: 1.5; }
+.noDeviceBtn {
+  margin-top: 8px;
+  padding: 12px 24px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--secondary), var(--primary));
+  border: none;
+  color: #030912;
+  font-size: 14px; font-weight: 700;
+  cursor: pointer;
+  font-family: 'Outfit', sans-serif;
+  box-shadow: 0 4px 20px rgba(0,242,254,0.3);
+  transition: all 0.2s;
+}
+.noDeviceBtn:hover { transform: translateY(-1px); box-shadow: 0 8px 28px rgba(0,242,254,0.45); }
+
+
 @keyframes float {
   0%   { transform: translate(0,0) scale(1); }
   100% { transform: translate(60px, 100px) scale(1.15); }

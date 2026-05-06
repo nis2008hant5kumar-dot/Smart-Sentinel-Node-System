@@ -17,27 +17,45 @@ const auth = getAuth(app);
 const toEmail = (username) => `${username.toLowerCase().trim()}@sentinel.node`;
 
 export function useAuth() {
-  const [user, setUser]       = useState(undefined); // undefined = loading
-  const [deviceId, setDeviceId] = useState(null);
-  const [authError, setAuthError] = useState(null);
+  const [user, setUser]               = useState(undefined);
+  const [deviceId, setDeviceId]       = useState(null);
+  const [deviceIdLoading, setDeviceIdLoading] = useState(true);
+  const [authError, setAuthError]     = useState(null);
 
-  // Fetch the linked deviceId from DB whenever user changes
+  // ── Effect 1: sync auth state listener (must NOT be async)
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, async (u) => {
+    const unsub = onAuthStateChanged(auth, (u) => {
       setUser(u ?? null);
-      if (u) {
-        try {
-          const snap = await get(ref(db, `users/${u.uid}/deviceId`));
-          setDeviceId(snap.exists() ? snap.val() : null);
-        } catch {
-          setDeviceId(null);
-        }
-      } else {
-        setDeviceId(null);
-      }
     });
     return unsub;
   }, []);
+
+  // ── Effect 2: fetch deviceId from DB whenever user changes
+  useEffect(() => {
+    if (user === undefined) return; // still initialising
+
+    if (user === null) {
+      setDeviceId(null);
+      setDeviceIdLoading(false);
+      return;
+    }
+
+    let cancelled = false;
+    setDeviceIdLoading(true);
+
+    get(ref(db, `users/${user.uid}/deviceId`))
+      .then((snap) => {
+        if (!cancelled) setDeviceId(snap.exists() ? snap.val() : null);
+      })
+      .catch(() => {
+        if (!cancelled) setDeviceId(null);
+      })
+      .finally(() => {
+        if (!cancelled) setDeviceIdLoading(false);
+      });
+
+    return () => { cancelled = true; };
+  }, [user]);
 
   const login = async (username, password) => {
     setAuthError(null);
@@ -88,7 +106,7 @@ export function useAuth() {
     }
   };
 
-  return { user, deviceId, authError, login, signup, logout, changePassword, changeDeviceId };
+  return { user, deviceId, deviceIdLoading, authError, login, signup, logout, changePassword, changeDeviceId };
 }
 
 function friendlyError(code) {
